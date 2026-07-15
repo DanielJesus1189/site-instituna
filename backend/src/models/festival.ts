@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
 
-const PremioSchema = new mongoose.Schema({ name: String});
-const TunaSchema = new mongoose.Schema({ name: String});
-
 const FestivalSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
     },
     tuna: {
-        type: TunaSchema,
+        type:{name: String},
         required: true,
     },
     location: {
@@ -20,18 +17,15 @@ const FestivalSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    premios: {
-        type: [PremioSchema],
-        required: true,
-    },
-    tunasConcurso: {
-        type: [TunaSchema],
-        required: true,
-    },
-    tunasExtra: {
-        type: [TunaSchema],
-        required: false,
-    }
+    premios: [{
+        name: String
+    }],
+    tunasConcurso: [{
+        name: String
+    }],
+    tunasExtra: [{
+        name: String
+    }]
     //TODO: Adicionar cartaz do festival
 },
 {
