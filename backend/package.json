@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prestart": "kill-port 4000",
     "start": "nodemon"
   },
   "keywords": [],
@@ -13,6 +14,7 @@
   "dependencies": {
     "@types/express": "^5.0.6",
     "@types/mongoose": "^5.11.96",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongoose": "^9.7.4",
@@ -20,6 +22,8 @@
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "kill-port": "^2.0.1",
     "typescript": "^5.9.3"
   }
 }
