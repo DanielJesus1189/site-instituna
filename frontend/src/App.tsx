@@ -3,6 +3,7 @@ import { useFestivals } from './hooks/useFestivals';
 import { YearSection } from './components/YearSection';
 import { FestivalFormModal } from './components/FestivalFormModal';
 import { SkeletonCard } from './components/SkeletonCard';
+import { StatsDashboard } from './components/StatsDashboard';
 import { yearOf } from './utils/date';
 import type { Festival } from './types';
 
@@ -104,18 +105,21 @@ function App() {
         )}
 
         {!error && !isLoading && festivals.length > 0 && (
-          <div className="flex flex-col gap-16">
-            {groupedByYear.map(([year, yearFestivals]) => (
-              <YearSection
-                key={year}
-                year={year}
-                festivals={yearFestivals}
-                onEdit={setEditingFestival}
-                onDelete={handleDelete}
-                deletingId={deletingId}
-              />
-            ))}
-          </div>
+          <>
+            <StatsDashboard festivals={festivals} />
+            <div className="flex flex-col gap-16">
+              {groupedByYear.map(([year, yearFestivals]) => (
+                <YearSection
+                  key={year}
+                  year={year}
+                  festivals={yearFestivals}
+                  onEdit={setEditingFestival}
+                  onDelete={handleDelete}
+                  deletingId={deletingId}
+                />
+              ))}
+            </div>
+          </>
         )}
       </main>
 
