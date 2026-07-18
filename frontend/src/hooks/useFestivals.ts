@@ -13,8 +13,8 @@ interface UseFestivalsResult {
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
-  addFestival: (input: CreateFestivalInput) => Promise<void>;
-  editFestival: (id: string, input: CreateFestivalInput) => Promise<void>;
+  addFestival: (input: CreateFestivalInput, cartaz?: File) => Promise<void>;
+  editFestival: (id: string, input: CreateFestivalInput, cartaz?: File) => Promise<void>;
   removeFestival: (id: string) => Promise<void>;
   isSubmitting: boolean;
   deletingId: string | null;
@@ -53,20 +53,20 @@ export function useFestivals(): UseFestivalsResult {
 
   const refetch = useCallback(() => setReloadToken((t) => t + 1), []);
 
-  const addFestival = useCallback(async (input: CreateFestivalInput) => {
+  const addFestival = useCallback(async (input: CreateFestivalInput, cartaz?: File) => {
     setIsSubmitting(true);
     try {
-      await createFestival(input);
+      await createFestival(input, cartaz);
       refetch();
     } finally {
       setIsSubmitting(false);
     }
   }, [refetch]);
 
-  const editFestival = useCallback(async (id: string, input: CreateFestivalInput) => {
+  const editFestival = useCallback(async (id: string, input: CreateFestivalInput, cartaz?: File) => {
     setIsSubmitting(true);
     try {
-      await updateFestivalRequest(id, input);
+      await updateFestivalRequest(id, input, cartaz);
       refetch();
     } finally {
       setIsSubmitting(false);

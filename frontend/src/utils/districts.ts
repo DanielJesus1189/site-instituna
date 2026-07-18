@@ -55,7 +55,6 @@ const CITY_TO_DISTRICT: Record<string, District> = {
   'cuba': 'Beja',
   'ferreira do alentejo': 'Beja',
   'mértola': 'Beja',
-  'mourão': 'Beja',
   'odmira': 'Beja',
   'ourique': 'Beja',
   'serpa': 'Beja',
@@ -107,7 +106,6 @@ const CITY_TO_DISTRICT: Record<string, District> = {
   'cantanhede': 'Coimbra',
   'montemor-o-velho': 'Coimbra',
   'soure': 'Coimbra',
-  'pombal': 'Leiria',
   'condeixa-a-nova': 'Coimbra',
   'mira': 'Coimbra',
   'argonilha': 'Coimbra',
@@ -405,7 +403,8 @@ export type AwardKey = (typeof AWARD_CATEGORIES)[number]['key'];
 export function categorizePremio(name: string): AwardKey {
   const lower = name.toLowerCase();
 
-  if (lower.includes('melhor tuna') || lower.includes('melhor tuna')) return 'Melhor Tuna';
+  if (lower.includes('2ª melhor tuna') || lower.includes('2a melhor tuna') || lower.includes('segunda melhor tuna')) return 'Outros Prémios';
+  if (lower.includes('melhor tuna')) return 'Melhor Tuna';
   if (lower.includes('pandeireta') || lower.includes('pandeiret')) return 'Melhor Pandeireta';
   if (lower.includes('estandarte')) return 'Melhor Estandarte';
   if (lower.includes('instrumental')) return 'Melhor Instrumental';

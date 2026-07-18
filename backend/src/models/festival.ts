@@ -25,8 +25,11 @@ const FestivalSchema = new mongoose.Schema({
     }],
     tunasExtra: [{
         name: String
-    }]
-    //TODO: Adicionar cartaz do festival
+    }],
+    cartaz: {
+        data: Buffer,
+        contentType: String,
+    },
 },
 {
     timestamps: true,

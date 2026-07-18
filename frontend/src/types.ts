@@ -24,7 +24,9 @@ export interface Festival {
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
-  /** Optional — not part of the base contract, rendered if the API provides it. */
+  /** URL to fetch the cartaz image (returned by the API if an image is stored). */
+  cartazUrl?: string;
+  /** @deprecated Use `cartazUrl` instead. */
   posterUrl?: string;
 }
 

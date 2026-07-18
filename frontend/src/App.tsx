@@ -48,7 +48,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b border-zinc-200 bg-white/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">
               Festivais de Tunas
@@ -65,7 +65,7 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {error && (
           <div className="mx-auto max-w-xl rounded-lg border border-red-200 bg-red-50 p-6 text-center">
             <p className="text-sm font-semibold text-red-700">Não foi possível carregar os festivais</p>
@@ -135,7 +135,7 @@ function App() {
         <FestivalFormModal
           festival={editingFestival}
           onClose={() => setEditingFestival(null)}
-          onSubmit={(input) => editFestival(editingFestival.id, input)}
+            onSubmit={(input, cartaz) => editFestival(editingFestival.id, input, cartaz)}
           isSubmitting={isSubmitting}
         />
       )}

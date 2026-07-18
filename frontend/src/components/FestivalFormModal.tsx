@@ -6,7 +6,7 @@ import { ChipListInput } from './ChipListInput';
 interface FestivalFormModalProps {
   festival?: Festival;
   onClose: () => void;
-  onSubmit: (input: CreateFestivalInput) => Promise<void>;
+  onSubmit: (input: CreateFestivalInput, cartaz?: File) => Promise<void>;
   isSubmitting: boolean;
 }
 
@@ -35,6 +35,7 @@ export function FestivalFormModal({
   const [tunasExtra, setTunasExtra] = useState<string[]>(
     festival?.tunasExtra.map((t) => t.name) ?? []
   );
+  const [cartazFile, setCartazFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent) {
@@ -47,15 +48,18 @@ export function FestivalFormModal({
     }
 
     try {
-      await onSubmit({
-        name: name.trim(),
-        tuna: { name: tunaName.trim() },
-        location: location.trim(),
-        date,
-        premios: premios.map((p) => ({ name: p })),
-        tunasConcurso: tunasConcurso.map((t) => ({ name: t })),
-        tunasExtra: tunasExtra.map((t) => ({ name: t })),
-      });
+      await onSubmit(
+        {
+          name: name.trim(),
+          tuna: { name: tunaName.trim() },
+          location: location.trim(),
+          date,
+          premios: premios.map((p) => ({ name: p })),
+          tunasConcurso: tunasConcurso.map((t) => ({ name: t })),
+          tunasExtra: tunasExtra.map((t) => ({ name: t })),
+        },
+        cartazFile ?? undefined,
+      );
       onClose();
     } catch {
       setError(
@@ -129,6 +133,37 @@ export function FestivalFormModal({
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
+          </div>
+
+          {/* Cartaz image upload */}
+          <div>
+            <label className={labelClass}>Cartaz (imagem)</label>
+            <div className="flex items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50">
+                <span className="text-base">📁</span>
+                <span>{cartazFile ? cartazFile.name : 'Selecionar ficheiro…'}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => setCartazFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+              {cartazFile && (
+                <button
+                  type="button"
+                  onClick={() => setCartazFile(null)}
+                  className="text-xs font-semibold text-red-600 hover:text-red-700"
+                >
+                  Remover
+                </button>
+              )}
+            </div>
+            {festival?.cartazUrl && !cartazFile && (
+              <p className="mt-1 text-[11px] text-zinc-500">
+                Já tem um cartaz. Seleciona um novo ficheiro para o substituir.
+              </p>
+            )}
           </div>
 
           <ChipListInput

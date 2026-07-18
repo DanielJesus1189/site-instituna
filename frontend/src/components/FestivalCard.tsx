@@ -70,16 +70,22 @@ export function FestivalCard({ festival, onEdit, onDelete, isDeleting }: Festiva
 
           <div className="mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4">
             <div className="aspect-[3/4] w-full">
-              {festival.posterUrl ? (
+              {festival.cartazUrl ? (
                 <img
-                  src={festival.posterUrl}
+                  src={festival.cartazUrl}
                   alt={`Cartaz de ${festival.name}`}
                   className="h-full w-full rounded-sm border border-black/10 object-cover"
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = 'none';
+                    target.parentElement?.querySelector('.cartaz-fallback')?.classList.remove('hidden');
+                  }}
                 />
-              ) : (
+              ) : null}
+              <div className={`cartaz-fallback h-full w-full ${festival.cartazUrl ? 'hidden' : ''}`}>
                 <PosterPlaceholder seed={festival.id || festival.name} title={festival.tuna.name} />
-              )}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">

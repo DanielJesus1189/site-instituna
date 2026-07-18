@@ -13,7 +13,7 @@ export function YearSection({ year, festivals, onEdit, onDelete, deletingId }: Y
   return (
     <section>
       <h2 className="text-center font-serif text-3xl font-bold text-zinc-900">{year}</h2>
-      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-14 xl:grid-cols-3">
         {festivals.map((festival) => (
           <FestivalCard
             key={festival.id}
