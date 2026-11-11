@@ -22,11 +22,15 @@ const ICON_MAP: Record<string, string> = {
 function StatIcon({ icon }: { icon: string }) {
   const src = ICON_MAP[icon];
   if (!src) return null;
-  return <img src={src} alt="" className="h-10 w-10 object-contain" />;
+  return <img src={src} alt="" className="h-4 w-4 object-contain opacity-55 grayscale" />;
+}
+
+function categoryLabel(key: string): string {
+  if (key === 'Outros Prémios') return 'Outros';
+  return key.replace('Melhor ', '');
 }
 
 export function StatsDashboard({ festivals }: StatsDashboardProps) {
-  // Compute award counts
   const awardCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const cat of AWARD_CATEGORIES) {
@@ -41,7 +45,6 @@ export function StatsDashboard({ festivals }: StatsDashboardProps) {
     return counts;
   }, [festivals]);
 
-  // Compute district → festival names from festival locations
   const districtFestivals = useMemo(() => {
     const map: Record<string, string[]> = {};
     for (const festival of festivals) {
@@ -63,45 +66,42 @@ export function StatsDashboard({ festivals }: StatsDashboardProps) {
   }, [districtFestivals]);
 
   return (
-    <section className="mb-16">
-      {/* ---- Stat Card Row ---- */}
-      <div className="mb-12 grid grid-cols-9 gap-4">
+    <section className="mb-20">
+      <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
+        <h2 className="font-serif text-2xl font-semibold">Palmarés acumulado</h2>
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+          Totais por categoria
+        </span>
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3 lg:grid-cols-9">
         {AWARD_CATEGORIES.map((cat) => (
-          <div
-            key={cat.key}
-            className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white px-3 py-5 shadow-sm"
-          >
-            <div className="mb-3">
+          <div key={cat.key} className="border-l border-ink/15 pl-3">
+            <div className="flex min-h-8 items-start gap-2">
               <StatIcon icon={cat.icon} />
+              <p className="font-mono text-[9px] uppercase leading-tight tracking-[0.14em] text-ink-soft">
+                {categoryLabel(cat.key)}
+              </p>
             </div>
-            <p className="text-center text-[11px] font-bold leading-tight tracking-wide text-zinc-800">
-              {cat.key === 'Tuna Mais Tuna'
-                ? 'Tuna Mais\nTuna'
-                : cat.key === 'Outros Prémios'
-                  ? 'Outros\nPrémios'
-                  : cat.key.replace('Melhor ', 'Melhor\n')}
-            </p>
-            <p className="mt-2 text-2xl font-bold text-zinc-900">
+            <p className="mt-2 font-serif text-3xl font-semibold leading-none">
               {awardCounts[cat.key] ?? 0}
             </p>
           </div>
         ))}
       </div>
 
-      {/* ---- Map Section ---- */}
-      <h2 className="mb-6 text-center text-xl font-bold tracking-widest text-zinc-900">
-        MAPA DE FESTIVAIS
-      </h2>
+      <div className="mt-14 border-y border-ink/15 py-8">
+        <div className="mb-6 flex items-baseline justify-between gap-4">
+          <h3 className="font-serif text-2xl font-semibold">Mapa de festivais</h3>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+            Distribuição por distrito
+          </span>
+        </div>
 
-      <div className="flex justify-center">
-        <div className="w-full max-w-2xl">
+        <div className="mx-auto max-w-3xl">
           <PortugalMap districtCounts={districtCounts} districtFestivals={districtFestivals} />
         </div>
       </div>
-
-      <h3 className="mt-6 text-center text-lg font-bold tracking-widest text-zinc-900">
-        FESTIVAIS
-      </h3>
     </section>
   );
 }

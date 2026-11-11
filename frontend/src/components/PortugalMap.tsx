@@ -235,10 +235,7 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
         return r.json();
       })
       .then((data: GeoJSON.FeatureCollection) => {
-        if (!cancelled) {
-          console.log('GeoJSON features loaded:', data.features.length);
-          setGeoData(data);
-        }
+        if (!cancelled) setGeoData(data);
       })
       .catch((err: Error) => {
         if (!cancelled) setLoadError(err.message);
@@ -266,13 +263,13 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .domain([minCount, Math.max(maxCount, 1)])
       .range(
         maxCount <= 1
-          ? ['#b0b0b0', '#2f7fb8']
-          : ['#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#2f7fb8'],
+          ? ['#ddcdb4', '#8a5a3b']
+          : ['#ddcdb4', '#cdb491', '#b9946a', '#9e7149', '#7f4d31', '#6e2632'],
       );
 
     function getFill(districtName: string): string {
       const count = districtCounts[districtName] ?? 0;
-      if (count === 0) return '#b0b0b0';
+      if (count === 0) return '#e9e0d1';
       return colorScale(count);
     }
 
@@ -347,9 +344,9 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
           const name = d.properties?.[labelKey] ?? '';
           return fillFn(name);
         })
-        .attr('data-hover-fill', () => '#0d3b66')
+        .attr('data-hover-fill', () => '#1d1a16')
         .attr('data-name', (d) => d.properties?.[labelKey] ?? '')
-        .attr('stroke', '#ffffff')
+        .attr('stroke', '#f3ede2')
         .attr('stroke-width', 1)
         .attr('stroke-linejoin', 'round')
         .style('cursor', 'pointer');
@@ -434,8 +431,8 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .attr('y', 453)
       .attr('text-anchor', 'middle')
       .attr('font-size', '10px')
-      .attr('font-weight', '600')
-      .attr('fill', '#666')
+      .attr('font-weight', '500')
+      .attr('fill', '#6f665b')
       .text('Açores');
 
     svg
@@ -444,19 +441,21 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .attr('y', 634)
       .attr('text-anchor', 'middle')
       .attr('font-size', '10px')
-      .attr('font-weight', '600')
-      .attr('fill', '#666')
+      .attr('font-weight', '500')
+      .attr('fill', '#6f665b')
       .text('Madeira');
-  }, [geoData, districtCounts]);
+  }, [geoData, districtCounts, districtFestivals]);
 
   if (loadError) {
-    return <p className="text-sm text-red-600">Erro ao carregar mapa: {loadError}</p>;
+    return <p className="text-sm text-wine">Erro ao carregar mapa: {loadError}</p>;
   }
 
   if (!geoData) {
     return (
       <div className="flex h-[600px] items-center justify-center">
-        <p className="text-sm text-zinc-400">A carregar mapa...</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+          A carregar mapa…
+        </p>
       </div>
     );
   }
@@ -471,7 +470,7 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       />
       <div
         ref={tooltipRef}
-        className="pointer-events-none fixed z-50 hidden whitespace-pre-line rounded-md bg-black/80 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg"
+        className="pointer-events-none fixed z-50 hidden whitespace-pre-line border border-ink/20 bg-ink px-3 py-2 font-mono text-[10px] uppercase tracking-[0.08em] text-paper"
       />
     </div>
   );

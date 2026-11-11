@@ -11,8 +11,8 @@ interface FestivalFormModalProps {
 }
 
 const inputClass =
-  'w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-500';
-const labelClass = 'mb-1.5 block text-xs font-bold uppercase tracking-wide text-zinc-700';
+  'w-full border-x-0 border-t-0 border-b border-ink/25 bg-transparent px-0 py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft/50 focus:border-wine focus:ring-0';
+const labelClass = 'mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft';
 
 export function FestivalFormModal({
   festival,
@@ -72,28 +72,33 @@ export function FestivalFormModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55 p-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg bg-white shadow-xl"
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto border border-ink/20 bg-paper shadow-[0_24px_70px_rgba(29,26,22,0.22)]"
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-900 px-5 py-3.5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-white">
-            {isEditing ? 'Editar Festival' : 'Novo Festival'}
-          </h2>
+        <div className="flex items-start justify-between border-b border-ink/15 px-6 py-5">
+          <div>
+            <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-wine">
+              Arquivo
+            </p>
+            <h2 className="mt-1 font-serif text-2xl font-semibold">
+              {isEditing ? 'Editar festival' : 'Novo festival'}
+            </h2>
+          </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="text-lg leading-none text-white/70 hover:text-white"
+            className="font-serif text-2xl leading-none text-ink-soft transition-colors hover:text-ink"
           >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
           <div>
             <label className={labelClass}>Nome do festival</label>
             <input
@@ -114,7 +119,7 @@ export function FestivalFormModal({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-5">
             <div>
               <label className={labelClass}>Localidade</label>
               <input
@@ -135,13 +140,11 @@ export function FestivalFormModal({
             </div>
           </div>
 
-          {/* Cartaz image upload */}
           <div>
             <label className={labelClass}>Cartaz (imagem)</label>
-            <div className="flex items-center gap-3">
-              <label className="flex cursor-pointer items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50">
-                <span className="text-base">📁</span>
-                <span>{cartazFile ? cartazFile.name : 'Selecionar ficheiro…'}</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="cursor-pointer border border-ink/20 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine">
+                {cartazFile ? 'Trocar ficheiro' : 'Escolher ficheiro'}
                 <input
                   type="file"
                   accept="image/*"
@@ -149,18 +152,21 @@ export function FestivalFormModal({
                   onChange={(e) => setCartazFile(e.target.files?.[0] ?? null)}
                 />
               </label>
+              <span className="min-w-0 flex-1 truncate text-xs text-ink-soft">
+                {cartazFile ? cartazFile.name : 'Nenhum ficheiro selecionado'}
+              </span>
               {cartazFile && (
                 <button
                   type="button"
                   onClick={() => setCartazFile(null)}
-                  className="text-xs font-semibold text-red-600 hover:text-red-700"
+                  className="font-mono text-[9px] uppercase tracking-[0.16em] text-wine underline decoration-rule underline-offset-4 hover:text-wine-dark"
                 >
                   Remover
                 </button>
               )}
             </div>
             {festival?.cartazUrl && !cartazFile && (
-              <p className="mt-1 text-[11px] text-zinc-500">
+              <p className="mt-2 text-[11px] text-ink-soft">
                 Já tem um cartaz. Seleciona um novo ficheiro para o substituir.
               </p>
             )}
@@ -173,32 +179,32 @@ export function FestivalFormModal({
             onChange={setPremios}
           />
           <ChipListInput
-            label="Tunas a Concurso"
+            label="Tunas a concurso"
             placeholder="Instituna"
             values={tunasConcurso}
             onChange={setTunasConcurso}
           />
           <ChipListInput
-            label="Extra Concurso"
+            label="Extra concurso"
             placeholder="Estudantina Académica de Lamego"
             values={tunasExtra}
             onChange={setTunasExtra}
           />
 
-          {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+          {error && <p className="text-sm font-medium text-wine">{error}</p>}
 
-          <div className="mt-2 flex justify-end gap-2">
+          <div className="mt-2 flex items-center justify-end gap-6 border-t border-ink/15 pt-5">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+              className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-soft underline decoration-rule underline-offset-4 hover:text-wine"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="border border-ink bg-ink px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-paper transition-colors hover:border-wine hover:bg-wine disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? 'A guardar…' : isEditing ? 'Guardar alterações' : 'Guardar festival'}
             </button>

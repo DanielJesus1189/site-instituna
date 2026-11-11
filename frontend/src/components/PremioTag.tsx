@@ -5,16 +5,13 @@ interface PremioTagProps {
 
 export function PremioTag({ label, variant = 'awarded' }: PremioTagProps) {
   if (variant === 'empty') {
-    return (
-      <div className="flex w-full items-center justify-center rounded-md bg-amber-100 px-3 py-2 text-center text-[11px] font-semibold uppercase tracking-wide text-amber-700">
-        {label}
-      </div>
-    );
+    return <li className="text-xs italic text-ink-soft">{label}</li>;
   }
 
   return (
-    <div className="flex w-full items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-center text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm shadow-blue-900/10 transition-colors hover:bg-blue-700">
-      {label}
-    </div>
+    <li className="flex items-baseline gap-2 text-[13px] leading-snug text-ink">
+      <span className="mt-1.5 h-px w-3 shrink-0 bg-gold" aria-hidden />
+      <span>{label}</span>
+    </li>
   );
 }

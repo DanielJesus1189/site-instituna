@@ -12,8 +12,17 @@ interface YearSectionProps {
 export function YearSection({ year, festivals, onEdit, onDelete, deletingId }: YearSectionProps) {
   return (
     <section>
-      <h2 className="text-center font-serif text-3xl font-bold text-zinc-900">{year}</h2>
-      <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-14 xl:grid-cols-3">
+      <div className="flex items-baseline gap-5">
+        <h2 className="font-serif text-5xl font-semibold leading-none tracking-tight text-ink">
+          {year}
+        </h2>
+        <div className="mb-1 h-px flex-1 bg-ink/20" />
+        <span className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+          {festivals.length} {festivals.length === 1 ? 'registo' : 'registos'}
+        </span>
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-14 lg:grid-cols-2">
         {festivals.map((festival) => (
           <FestivalCard
             key={festival.id}

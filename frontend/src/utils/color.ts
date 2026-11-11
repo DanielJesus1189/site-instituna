@@ -1,11 +1,11 @@
-/** A small, curated set of hue pairs so placeholders stay tasteful instead of neon-random. */
+/** Muted, archival tones for posters that do not have an uploaded image. */
 const PALETTE: Array<{ from: string; to: string }> = [
-  { from: '#1e293b', to: '#334155' }, // slate
-  { from: '#1c1917', to: '#44403c' }, // stone
-  { from: '#164e63', to: '#0e7490' }, // cyan-dark
-  { from: '#3f3f46', to: '#52525b' }, // zinc
-  { from: '#134e4a', to: '#0f766e' }, // teal-dark
-  { from: '#1e1b4b', to: '#312e81' }, // indigo-dark
+  { from: '#26221d', to: '#3b342c' }, // ink
+  { from: '#5f2630', to: '#7a3540' }, // wine
+  { from: '#38443a', to: '#4f5c4c' }, // olive
+  { from: '#34424a', to: '#4b5c65' }, // slate
+  { from: '#6b4f2d', to: '#86663d' }, // ochre
+  { from: '#5a352b', to: '#75483a' }, // rust
 ];
 
 function hashString(value: string): number {

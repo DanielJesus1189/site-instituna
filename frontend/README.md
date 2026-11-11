@@ -18,9 +18,18 @@ A app espera as seguintes rotas:
 
 - `GET    {VITE_API_BASE_URL}/festival` → `Festival[]`
 - `GET    {VITE_API_BASE_URL}/festival/:id` → `Festival` (disponível no client, não usada na listagem)
-- `POST   {VITE_API_BASE_URL}/festival` → cria um festival, corpo igual ao exemplo abaixo
-- `PUT    {VITE_API_BASE_URL}/festival/:id` → atualiza um festival, mesmo corpo
-- `DELETE {VITE_API_BASE_URL}/festival/:id` → elimina um festival
+- `POST   {VITE_API_BASE_URL}/auth/login` → troca credenciais por um token JWT
+- `GET    {VITE_API_BASE_URL}/auth/me` → valida o token e devolve o utilizador
+- `POST   {VITE_API_BASE_URL}/festival` → cria um festival (requer autenticação)
+- `PUT    {VITE_API_BASE_URL}/festival/:id` → atualiza um festival (requer autenticação)
+- `DELETE {VITE_API_BASE_URL}/festival/:id` → elimina um festival (requer autenticação)
+
+## Autenticação
+
+A listagem é pública. O botão **Entrar** abre a página de login; após autenticar,
+o token é guardado em `localStorage` e enviado como `Authorization: Bearer <token>`
+nos pedidos de escrita. Só com sessão iniciada aparecem o botão "+ Novo Festival"
+e os controlos de editar (✎) e eliminar (🗑) em cada cartão.
 
 Cada cartão de festival mostra (ao passar o rato) um botão de editar (✎) e eliminar (🗑). Editar reutiliza o mesmo formulário do "Novo Festival", pré-preenchido. Eliminar pede confirmação antes de chamar o `DELETE`.
 
@@ -56,9 +65,11 @@ Um campo opcional `posterUrl` (string, URL da imagem do cartaz) é suportado mas
 
 ```
 src/
-  api/client.ts          fetch wrapper + chamadas GET/POST
+  api/client.ts          fetch wrapper, autenticação e chamadas à API
+  auth/token.ts          persistência do token JWT em localStorage
   hooks/useFestivals.ts  carregamento, erro, refetch, criação
-  components/            FestivalCard, YearSection, AddFestivalModal, ...
+  hooks/useAuth.ts       sessão, login e logout
+  components/            LoginPage, FestivalCard, YearSection, ...
   utils/                 formatação de datas, cor do placeholder de cartaz
   types.ts               Festival, Premio, TunaRef, CreateFestivalInput
 ```

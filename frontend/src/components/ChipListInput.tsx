@@ -33,21 +33,21 @@ export function ChipListInput({ label, placeholder, values, onChange }: ChipList
 
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-zinc-700">
+      <label className="mb-1 block font-mono text-[9px] uppercase tracking-[0.18em] text-ink-soft">
         {label}
       </label>
-      <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-zinc-300 bg-white p-2 focus-within:border-zinc-500">
+      <div className="flex flex-wrap items-center gap-2 border border-ink/20 bg-paper/60 p-2.5 transition-colors focus-within:border-wine">
         {values.map((value, i) => (
           <span
             key={`${value}-${i}`}
-            className="flex items-center gap-1 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white"
+            className="flex items-center gap-1.5 border border-ink/20 bg-paper-deep/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-ink"
           >
             {value}
             <button
               type="button"
               onClick={() => removeAt(i)}
               aria-label={`Remover ${value}`}
-              className="leading-none text-white/80 hover:text-white"
+              className="leading-none text-ink-soft hover:text-wine"
             >
               ×
             </button>
@@ -59,10 +59,12 @@ export function ChipListInput({ label, placeholder, values, onChange }: ChipList
           onKeyDown={handleKeyDown}
           onBlur={commitDraft}
           placeholder={values.length === 0 ? placeholder : ''}
-          className="min-w-[8ch] flex-1 border-none bg-transparent px-1 py-0.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
+          className="min-w-[8ch] flex-1 border-none bg-transparent px-1 py-0.5 text-sm text-ink outline-none placeholder:text-ink-soft/50"
         />
       </div>
-      <p className="mt-1 text-[11px] text-zinc-400">Enter ou vírgula para adicionar</p>
+      <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-soft/70">
+        Enter ou vírgula para adicionar
+      </p>
     </div>
   );
 }

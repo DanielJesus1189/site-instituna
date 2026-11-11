@@ -1,10 +1,22 @@
 import type { CreateFestivalInput, Festival } from '../types';
+import {
+  clearAuthToken,
+  getAuthToken,
+  notifyUnauthorized,
+} from '../auth/token';
 
 /**
  * Base URL of the festivals API.
  * Configure via a `.env` file: VITE_API_BASE_URL=https://your-api.example.com/api
  */
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000';
+const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000';
+
+/**
+ * Strip trailing slashes so request paths can safely start with "/".
+ * Without this, a base URL ending in "/" produces "//festival", which the
+ * server does not match to the "/festival" route and answers with a 404.
+ */
+const BASE_URL = RAW_BASE_URL.replace(/\/+$/, '');
 
 export class ApiError extends Error {
   status?: number;
@@ -15,12 +27,61 @@ export class ApiError extends Error {
   }
 }
 
+export interface AuthUser {
+  username: string;
+}
+
+interface LoginResponse {
+  token: string;
+  user: AuthUser;
+}
+
+/** POST /auth/login — exchange credentials for a JWT. */
+export async function login(username: string, password: string): Promise<LoginResponse> {
+  const body = await request<{ data: LoginResponse }>('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  });
+  return body.data;
+}
+
+/** GET /auth/me — validate the stored token and return the current user. */
+export async function fetchCurrentUser(): Promise<AuthUser> {
+  const body = await request<{ data: AuthUser }>('/auth/me');
+  return body.data;
+}
+
+function authHeaders(): Headers {
+  const headers = new Headers();
+  const token = getAuthToken();
+
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+
+  return headers;
+}
+
+/** Clears an expired/invalid session and lets the auth state react to it. */
+function handleUnauthorized(status: number): void {
+  if (status === 401 && getAuthToken()) {
+    clearAuthToken();
+    notifyUnauthorized();
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const headers = new Headers(options?.headers);
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+  for (const [name, value] of authHeaders()) {
+    headers.set(name, value);
+  }
+
   let response: Response;
   try {
     response = await fetch(`${BASE_URL}${path}`, {
-      headers: { 'Content-Type': 'application/json' },
       ...options,
+      headers,
     });
   } catch {
     throw new ApiError(
@@ -29,6 +90,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   }
 
   if (!response.ok) {
+    handleUnauthorized(response.status);
+
     let detail = '';
     try {
       const body = await response.json();
@@ -60,6 +123,7 @@ async function requestFormData<T>(
     response = await fetch(`${BASE_URL}${path}`, {
       method,
       body: formData,
+      headers: authHeaders(),
     });
   } catch {
     throw new ApiError(
@@ -68,6 +132,8 @@ async function requestFormData<T>(
   }
 
   if (!response.ok) {
+    handleUnauthorized(response.status);
+
     let detail = '';
     try {
       const body = await response.json();
