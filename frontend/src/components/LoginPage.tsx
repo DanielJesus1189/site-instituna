@@ -79,7 +79,14 @@ export function LoginPage({ onLogin, onSuccess, onBack }: LoginPageProps) {
 
               <div className="flex items-end justify-between gap-4">
                 <ArchFrame className="h-40 w-28 shrink-0">
-                  <span className="font-display text-5xl text-ink">I</span>
+                  <img
+                    src="/logo-instituna.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="arch-crest"
+                    width={512}
+                    height={422}
+                  />
                 </ArchFrame>
                 <p className="label label--light">Cartaz &amp; Palmarés</p>
               </div>

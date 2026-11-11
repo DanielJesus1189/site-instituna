@@ -629,20 +629,19 @@
     margin-inline: auto;
   }
 
-  .hero-arch__monogram {
-    font-family: var(--font-hand);
-    font-size: 7rem;
-    line-height: 1;
-    color: var(--ink);
-    transform: rotate(-4deg);
-  }
-
   .hero-arch__caption {
     position: absolute;
     bottom: 1.6rem;
     left: 0;
     width: 100%;
     text-align: center;
+  }
+
+  .arch-crest {
+    width: min(68%, 9rem);
+    height: auto;
+    transform: rotate(-3deg);
+    filter: drop-shadow(2px 3px 0 rgba(54, 42, 27, 0.18));
   }
 
   .section-heading {

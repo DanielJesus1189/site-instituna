@@ -121,9 +121,14 @@ function App() {
 
             <ArchFrame className="hero-arch hidden lg:block">
               <div className="relative flex h-full w-full flex-col items-center justify-center">
-                <span className="hero-arch__monogram" aria-hidden="true">
-                  I
-                </span>
+                <img
+                  src="/logo-instituna.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="arch-crest"
+                  width={512}
+                  height={422}
+                />
                 <span className="hero-arch__caption label label--ink">Arquivo</span>
               </div>
             </ArchFrame>
