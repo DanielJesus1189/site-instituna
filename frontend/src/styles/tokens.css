@@ -1,0 +1,37 @@
+/* ─────────────────────────────────────────────────────────────
+   Instituna — cartaz de papel kraft pintado à mão
+   Tokens únicos de cor, tipografia e textura.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Cores */
+  --paper: #d9cba2;
+  --paper-light: #e6dbb8;
+  --paper-deep: #cbb98c;
+  --ink: #111111;
+  --ink-soft: #514c3f;
+  --ink-faint: #8f846b;
+  --green: #3f7d5b;
+  --ochre: #e2a94a;
+  --blue: #5b93ce;
+  --gold: #d4a90a;
+  --navy: #061a5c;
+  --deep-green: #0b5a12;
+  --brick: #7e2a1e;
+
+  /* Linhas e sombras */
+  --rule: rgba(17, 17, 17, 0.2);
+  --rule-strong: rgba(17, 17, 17, 0.42);
+  --shadow-soft: rgba(54, 42, 27, 0.18);
+  --shadow-deep: rgba(54, 42, 27, 0.3);
+
+  /* Tipografia */
+  --font-hand: 'Permanent Marker', 'Bradley Hand', 'Chalkboard SE', cursive;
+  --font-serif-soft: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-reading: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+  /* Ritmo */
+  --shell: 78rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --radius-torn: 5px 8px 6px 9px / 8px 5px 9px 6px;
+}
