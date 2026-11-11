@@ -50,9 +50,9 @@ handlers, dados ou autenticação:
 
 ### Imagens
 
-- `public/logo-instituna.png` — brasão usado no cabeçalho, login e rodapé.
+- `public/logo-instituna.png` — brasão oficial usado no cabeçalho, login e rodapé.
 - `public/apple-touch-icon.png` — ícone de instalação iOS.
-- `public/favicon.svg` — favicon vetorial.
+- `public/favicon.png` — favicon gerado a partir do brasão.
 - `public/fitumis-capa.png` — imagem Open Graph/Twitter (1200 × 630).
 
 ## Arrancar
