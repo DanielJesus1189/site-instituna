@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { ApiError } from '../api/client';
-import { ArchFrame } from './ui/ArchFrame';
 import { Brand } from './ui/Brand';
 import { BrushStripes } from './ui/BrushStripes';
 import { Button } from './ui/Button';
@@ -78,16 +77,15 @@ export function LoginPage({ onLogin, onSuccess, onBack }: LoginPageProps) {
               </div>
 
               <div className="flex items-end justify-between gap-4">
-                <ArchFrame className="h-40 w-28 shrink-0">
+                <span className="login-crest">
                   <img
                     src="/logo-instituna.png"
                     alt=""
                     aria-hidden="true"
-                    className="arch-crest"
                     width={512}
                     height={422}
                   />
-                </ArchFrame>
+                </span>
                 <p className="label label--light">Cartaz &amp; Palmarés</p>
               </div>
             </aside>
