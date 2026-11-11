@@ -1,5 +1,7 @@
 import type { Festival } from '../types';
 import { FestivalCard } from './FestivalCard';
+import { BrushStripes } from './ui/BrushStripes';
+import { Reveal } from './ui/Reveal';
 
 interface YearSectionProps {
   year: number;
@@ -11,26 +13,25 @@ interface YearSectionProps {
 
 export function YearSection({ year, festivals, onEdit, onDelete, deletingId }: YearSectionProps) {
   return (
-    <section>
-      <div className="flex items-baseline gap-5">
-        <h2 className="font-serif text-5xl font-semibold leading-none tracking-tight text-ink">
-          {year}
-        </h2>
-        <div className="mb-1 h-px flex-1 bg-ink/20" />
-        <span className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+    <section className="year-section">
+      <div className="year-heading">
+        <h2 className="year-number display-ink">{year}</h2>
+        <BrushStripes className="year-stripes" />
+        <span className="year-count label">
           {festivals.length} {festivals.length === 1 ? 'registo' : 'registos'}
         </span>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-14 lg:grid-cols-2">
-        {festivals.map((festival) => (
-          <FestivalCard
-            key={festival.id}
-            festival={festival}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            isDeleting={deletingId === festival.id}
-          />
+      <div className="year-grid">
+        {festivals.map((festival, index) => (
+          <Reveal key={festival.id} delay={Math.min(index * 70, 280)}>
+            <FestivalCard
+              festival={festival}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              isDeleting={deletingId === festival.id}
+            />
+          </Reveal>
         ))}
       </div>
     </section>

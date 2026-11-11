@@ -10,10 +10,8 @@ export function TunaList({ label, tunas }: TunaListProps) {
 
   return (
     <div>
-      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink-soft">{label}</p>
-      <p className="mt-1 text-xs leading-relaxed text-ink">
-        {tunas.map((t) => t.name).join(' / ')}
-      </p>
+      <p className="label">{label}</p>
+      <p className="tuna-list__names">{tunas.map((t) => t.name).join(' / ')}</p>
     </div>
   );
 }

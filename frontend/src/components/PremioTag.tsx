@@ -5,12 +5,12 @@ interface PremioTagProps {
 
 export function PremioTag({ label, variant = 'awarded' }: PremioTagProps) {
   if (variant === 'empty') {
-    return <li className="text-xs italic text-ink-soft">{label}</li>;
+    return <li className="premio-empty text-xs">{label}</li>;
   }
 
   return (
-    <li className="flex items-baseline gap-2 text-[13px] leading-snug text-ink">
-      <span className="mt-1.5 h-px w-3 shrink-0 bg-gold" aria-hidden />
+    <li className="premio-tag">
+      <span className="premio-dash" aria-hidden="true" />
       <span>{label}</span>
     </li>
   );
