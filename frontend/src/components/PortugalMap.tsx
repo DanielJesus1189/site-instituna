@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import { BrushStripes } from './ui/BrushStripes';
 
 const GEOJSON_URL =
   'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/portugal.geojson';
@@ -263,13 +264,13 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .domain([minCount, Math.max(maxCount, 1)])
       .range(
         maxCount <= 1
-          ? ['#ddcdb4', '#8a5a3b']
-          : ['#ddcdb4', '#cdb491', '#b9946a', '#9e7149', '#7f4d31', '#6e2632'],
+          ? ['#E2A94A', '#3F7D5B']
+          : ['#E2A94A', '#C8A34E', '#A89B4B', '#7E9A50', '#5C8C58', '#3F7D5B'],
       );
 
     function getFill(districtName: string): string {
       const count = districtCounts[districtName] ?? 0;
-      if (count === 0) return '#e9e0d1';
+      if (count === 0) return '#E6DBB8';
       return colorScale(count);
     }
 
@@ -344,10 +345,10 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
           const name = d.properties?.[labelKey] ?? '';
           return fillFn(name);
         })
-        .attr('data-hover-fill', () => '#1d1a16')
+        .attr('data-hover-fill', () => '#5B93CE')
         .attr('data-name', (d) => d.properties?.[labelKey] ?? '')
-        .attr('stroke', '#f3ede2')
-        .attr('stroke-width', 1)
+        .attr('stroke', '#111111')
+        .attr('stroke-width', 0.7)
         .attr('stroke-linejoin', 'round')
         .style('cursor', 'pointer');
 
@@ -430,9 +431,11 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .attr('x', 125)
       .attr('y', 453)
       .attr('text-anchor', 'middle')
-      .attr('font-size', '10px')
-      .attr('font-weight', '500')
-      .attr('fill', '#6f665b')
+      .attr('font-size', '11px')
+      .attr('font-weight', '600')
+      .attr('font-family', 'Newsreader, Georgia, serif')
+      .attr('letter-spacing', '0.12em')
+      .attr('fill', '#514C3F')
       .text('Açores');
 
     svg
@@ -440,22 +443,27 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
       .attr('x', 85)
       .attr('y', 634)
       .attr('text-anchor', 'middle')
-      .attr('font-size', '10px')
-      .attr('font-weight', '500')
-      .attr('fill', '#6f665b')
+      .attr('font-size', '11px')
+      .attr('font-weight', '600')
+      .attr('font-family', 'Newsreader, Georgia, serif')
+      .attr('letter-spacing', '0.12em')
+      .attr('fill', '#514C3F')
       .text('Madeira');
   }, [geoData, districtCounts, districtFestivals]);
 
   if (loadError) {
-    return <p className="text-sm text-wine">Erro ao carregar mapa: {loadError}</p>;
+    return (
+      <p className="form-error mx-auto max-w-md" role="alert">
+        Erro ao carregar mapa: {loadError}
+      </p>
+    );
   }
 
   if (!geoData) {
     return (
-      <div className="flex h-[600px] items-center justify-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-          A carregar mapa…
-        </p>
+      <div className="flex h-[600px] flex-col items-center justify-center gap-4">
+        <BrushStripes loading className="h-6 w-28" />
+        <p className="label">A carregar mapa…</p>
       </div>
     );
   }
@@ -464,14 +472,13 @@ export function PortugalMap({ districtCounts, districtFestivals }: PortugalMapPr
     <div className="relative w-full">
       <svg
         ref={svgRef}
-        className="h-auto w-full"
+        className="map-svg"
         style={{ maxWidth: '100%', background: 'transparent' }}
         preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Mapa de festivais por distrito"
       />
-      <div
-        ref={tooltipRef}
-        className="pointer-events-none fixed z-50 hidden whitespace-pre-line border border-ink/20 bg-ink px-3 py-2 font-mono text-[10px] uppercase tracking-[0.08em] text-paper"
-      />
+      <div ref={tooltipRef} className="map-tooltip" />
     </div>
   );
 }

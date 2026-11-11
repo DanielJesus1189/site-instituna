@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import type { Festival } from '../types';
 import { AWARD_CATEGORIES, categorizePremio, getDistrict } from '../utils/districts';
 import { PortugalMap } from './PortugalMap';
+import { InkDivider } from './ui/InkDivider';
+import { Reveal } from './ui/Reveal';
 
 interface StatsDashboardProps {
   festivals: Festival[];
@@ -19,10 +22,12 @@ const ICON_MAP: Record<string, string> = {
   grid: '/award-prize-rate-rating-reward-stars-2-svgrepo-com.svg',
 };
 
+const STAMP_TILTS = [-1.1, 0.7, -0.5, 1.2, -0.8, 0.4, -1.3, 0.9, -0.3];
+
 function StatIcon({ icon }: { icon: string }) {
   const src = ICON_MAP[icon];
   if (!src) return null;
-  return <img src={src} alt="" className="h-4 w-4 object-contain opacity-55 grayscale" />;
+  return <img src={src} alt="" width={18} height={18} loading="lazy" />;
 }
 
 function categoryLabel(key: string): string {
@@ -66,40 +71,65 @@ export function StatsDashboard({ festivals }: StatsDashboardProps) {
   }, [districtFestivals]);
 
   return (
-    <section className="mb-20">
-      <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
-        <h2 className="font-serif text-2xl font-semibold">Palmarés acumulado</h2>
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-          Totais por categoria
-        </span>
+    <section className="mb-24">
+      <div className="section-heading">
+        <div>
+          <h2>Palmarés acumulado</h2>
+          <InkDivider className="mt-2 w-40 opacity-70" />
+        </div>
+        <span className="label">Totais por categoria</span>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3 lg:grid-cols-9">
-        {AWARD_CATEGORIES.map((cat) => (
-          <div key={cat.key} className="border-l border-ink/15 pl-3">
-            <div className="flex min-h-8 items-start gap-2">
-              <StatIcon icon={cat.icon} />
-              <p className="font-mono text-[9px] uppercase leading-tight tracking-[0.14em] text-ink-soft">
-                {categoryLabel(cat.key)}
-              </p>
-            </div>
-            <p className="mt-2 font-serif text-3xl font-semibold leading-none">
-              {awardCounts[cat.key] ?? 0}
-            </p>
+      <div className="stats-grid mt-7">
+        {AWARD_CATEGORIES.map((cat, index) => {
+          const style = {
+            '--tilt': `${STAMP_TILTS[index] ?? 0}deg`,
+          } as CSSProperties;
+
+          return (
+            <Reveal key={cat.key} delay={index * 45} tilt={STAMP_TILTS[index] ?? 0}>
+              <div className="stat-stamp" style={style}>
+                <div className="stat-stamp__top">
+                  <span className="stat-stamp__icon">
+                    <StatIcon icon={cat.icon} />
+                  </span>
+                  <p className="stat-stamp__label">{categoryLabel(cat.key)}</p>
+                </div>
+                <p className="stat-stamp__number">{awardCounts[cat.key] ?? 0}</p>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+
+      <div className="mt-16">
+        <div className="section-heading">
+          <div>
+            <h3>Mapa de festivais</h3>
+            <InkDivider className="mt-2 w-36 opacity-70" />
           </div>
-        ))}
-      </div>
-
-      <div className="mt-14 border-y border-ink/15 py-8">
-        <div className="mb-6 flex items-baseline justify-between gap-4">
-          <h3 className="font-serif text-2xl font-semibold">Mapa de festivais</h3>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-            Distribuição por distrito
-          </span>
+          <span className="label">Distribuição por distrito</span>
         </div>
 
-        <div className="mx-auto max-w-3xl">
-          <PortugalMap districtCounts={districtCounts} districtFestivals={districtFestivals} />
+        <div className="mx-auto mt-6 max-w-3xl">
+          <div className="map-frame">
+            <PortugalMap
+              districtCounts={districtCounts}
+              districtFestivals={districtFestivals}
+            />
+          </div>
+
+          <div className="map-legend" role="group" aria-label="Legenda do mapa">
+            <span
+              className="map-legend__swatch"
+              style={{ background: 'var(--paper-light)' }}
+              aria-hidden="true"
+            />
+            <span className="label">Sem festivais</span>
+            <span className="label">Menos</span>
+            <span className="map-legend__scale" aria-hidden="true" />
+            <span className="label">Mais</span>
+          </div>
         </div>
       </div>
     </section>
