@@ -758,6 +758,7 @@
   .stat-stamp {
     position: relative;
     display: flex;
+    width: 100%;
     min-height: 8.5rem;
     flex-direction: column;
     justify-content: space-between;
@@ -767,6 +768,10 @@
     background: var(--paper-light);
     box-shadow: 2px 3px 0 rgba(54, 42, 27, 0.16);
     transform: rotate(var(--tilt, 0deg));
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    appearance: none;
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -788,6 +793,34 @@
   .stat-stamp:hover {
     transform: rotate(calc(var(--tilt, 0deg) + 1deg)) translateY(-3px);
     box-shadow: 3px 5px 0 rgba(54, 42, 27, 0.14);
+  }
+
+  .stat-stamp:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .stat-stamp[aria-pressed='true'] {
+    border-color: var(--navy);
+    background: color-mix(in srgb, var(--gold) 22%, var(--paper-light));
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--gold) 55%, transparent),
+      3px 5px 0 rgba(54, 42, 27, 0.14);
+  }
+
+  .stat-stamp[aria-pressed='true'] .stat-stamp__label,
+  .stat-stamp[aria-pressed='true'] .stat-stamp__number {
+    color: var(--navy);
+  }
+
+  .stat-stamp:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  .stat-stamp:disabled:hover {
+    transform: rotate(var(--tilt, 0deg));
+    box-shadow: 2px 3px 0 rgba(54, 42, 27, 0.16);
   }
 
   .stat-stamp__top {
@@ -824,6 +857,50 @@
     font-size: clamp(2rem, 4vw, 2.7rem);
     line-height: 1;
     color: var(--ink);
+  }
+
+  .archive-heading {
+    scroll-margin-top: 1.5rem;
+  }
+
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.35rem 0.28rem 0.65rem;
+    border: 1.5px solid var(--navy);
+    border-radius: var(--radius-torn);
+    background: color-mix(in srgb, var(--gold) 22%, var(--paper-light));
+    color: var(--navy);
+    font-family: var(--font-reading);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .filter-chip__clear {
+    display: inline-flex;
+    width: 1.35rem;
+    height: 1.35rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .filter-chip__clear:hover {
+    background: color-mix(in srgb, var(--navy) 12%, transparent);
+  }
+
+  .filter-chip__clear:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
   }
 
   /* ── Mapa ────────────────────────────────────────────────── */

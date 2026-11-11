@@ -2,12 +2,16 @@ import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import type { Festival } from '../types';
 import { AWARD_CATEGORIES, categorizePremio, getDistrict } from '../utils/districts';
+import type { AwardKey } from '../utils/districts';
+import { categoryLabel } from '../utils/categoryLabel';
 import { PortugalMap } from './PortugalMap';
 import { InkDivider } from './ui/InkDivider';
 import { Reveal } from './ui/Reveal';
 
 interface StatsDashboardProps {
   festivals: Festival[];
+  activeCategory: AwardKey | null;
+  onSelectCategory: (category: AwardKey) => void;
 }
 
 const ICON_MAP: Record<string, string> = {
@@ -30,12 +34,11 @@ function StatIcon({ icon }: { icon: string }) {
   return <img src={src} alt="" width={18} height={18} loading="lazy" />;
 }
 
-function categoryLabel(key: string): string {
-  if (key === 'Outros Prémios') return 'Outros';
-  return key.replace('Melhor ', '');
-}
-
-export function StatsDashboard({ festivals }: StatsDashboardProps) {
+export function StatsDashboard({
+  festivals,
+  activeCategory,
+  onSelectCategory,
+}: StatsDashboardProps) {
   const awardCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const cat of AWARD_CATEGORIES) {
@@ -85,22 +88,37 @@ export function StatsDashboard({ festivals }: StatsDashboardProps) {
           const style = {
             '--tilt': `${STAMP_TILTS[index] ?? 0}deg`,
           } as CSSProperties;
+          const count = awardCounts[cat.key] ?? 0;
+          const isActive = activeCategory === cat.key;
+          const label = categoryLabel(cat.key);
 
           return (
             <Reveal key={cat.key} delay={index * 45} tilt={STAMP_TILTS[index] ?? 0}>
-              <div className="stat-stamp" style={style}>
+              <button
+                type="button"
+                className="stat-stamp"
+                style={style}
+                aria-pressed={isActive}
+                aria-label={`${label}: ${count} ${count === 1 ? 'festival' : 'festivais'}`}
+                disabled={count === 0 && !isActive}
+                onClick={() => onSelectCategory(cat.key)}
+              >
                 <div className="stat-stamp__top">
                   <span className="stat-stamp__icon">
                     <StatIcon icon={cat.icon} />
                   </span>
-                  <p className="stat-stamp__label">{categoryLabel(cat.key)}</p>
+                  <p className="stat-stamp__label">{label}</p>
                 </div>
-                <p className="stat-stamp__number">{awardCounts[cat.key] ?? 0}</p>
-              </div>
+                <p className="stat-stamp__number">{count}</p>
+              </button>
             </Reveal>
           );
         })}
       </div>
+
+      <p className="field-hint mt-3">
+        Toca num selo para ver apenas os festivais dessa categoria.
+      </p>
 
       <div className="mt-16">
         <div className="section-heading">

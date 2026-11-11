@@ -6,7 +6,10 @@ import { FestivalFormModal } from './components/FestivalFormModal';
 import { LoginPage } from './components/LoginPage';
 import { SkeletonCard } from './components/SkeletonCard';
 import { StatsDashboard } from './components/StatsDashboard';
+import { categoryLabel } from './utils/categoryLabel';
 import { yearOf } from './utils/date';
+import { categorizePremio } from './utils/districts';
+import type { AwardKey } from './utils/districts';
 import type { Festival } from './types';
 import { Brand } from './components/ui/Brand';
 import { BrushStripes } from './components/ui/BrushStripes';
@@ -32,10 +35,18 @@ function App() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingFestival, setEditingFestival] = useState<Festival | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<AwardKey | null>(null);
+
+  const filteredFestivals = useMemo(() => {
+    if (!activeCategory) return festivals;
+    return festivals.filter((festival) =>
+      festival.premios.some((premio) => categorizePremio(premio.name) === activeCategory)
+    );
+  }, [festivals, activeCategory]);
 
   const groupedByYear = useMemo(() => {
-    const groups = new Map<number, typeof festivals>();
-    for (const festival of festivals) {
+    const groups = new Map<number, Festival[]>();
+    for (const festival of filteredFestivals) {
       const year = yearOf(festival.date);
       const existing = groups.get(year) ?? [];
       existing.push(festival);
@@ -45,7 +56,25 @@ function App() {
       list.sort((a, b) => b.date.localeCompare(a.date));
     }
     return [...groups.entries()].sort((a, b) => b[0] - a[0]);
-  }, [festivals]);
+  }, [filteredFestivals]);
+
+  function handleSelectCategory(category: AwardKey) {
+    const next = activeCategory === category ? null : category;
+    setActiveCategory(next);
+
+    if (!next) return;
+
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.setTimeout(() => {
+      document.getElementById('arquivo')?.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }, 80);
+  }
 
   async function handleDelete(festival: Festival) {
     if (!isAuthenticated) return;
@@ -188,30 +217,73 @@ function App() {
 
         {!error && !isLoading && festivals.length > 0 && (
           <>
-            <StatsDashboard festivals={festivals} />
+            <StatsDashboard
+              festivals={festivals}
+              activeCategory={activeCategory}
+              onSelectCategory={handleSelectCategory}
+            />
 
-            <div className="mb-10 flex flex-wrap items-end justify-between gap-3">
+            <div
+              id="arquivo"
+              className="archive-heading mb-10 flex flex-wrap items-end justify-between gap-3"
+            >
               <div>
                 <h2 className="font-title text-2xl sm:text-3xl">Arquivo por ano</h2>
                 <InkDivider className="mt-2 w-44 opacity-70" />
               </div>
-              <span className="label">
-                {festivals.length} {festivals.length === 1 ? 'festival' : 'festivais'}
-              </span>
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                {activeCategory && (
+                  <span className="filter-chip">
+                    <span>{categoryLabel(activeCategory)}</span>
+                    <button
+                      type="button"
+                      className="filter-chip__clear"
+                      onClick={() => setActiveCategory(null)}
+                      aria-label={`Limpar filtro ${categoryLabel(activeCategory)}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                <span className="label" role="status" aria-live="polite" aria-atomic="true">
+                  {activeCategory
+                    ? `${filteredFestivals.length} de ${festivals.length} festivais`
+                    : `${festivals.length} ${festivals.length === 1 ? 'festival' : 'festivais'}`}
+                </span>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-24">
-              {groupedByYear.map(([year, yearFestivals]) => (
-                <YearSection
-                  key={year}
-                  year={year}
-                  festivals={yearFestivals}
-                  onEdit={isAuthenticated ? setEditingFestival : undefined}
-                  onDelete={isAuthenticated ? handleDelete : undefined}
-                  deletingId={deletingId}
-                />
-              ))}
-            </div>
+            {activeCategory && filteredFestivals.length === 0 && (
+              <div className="state-card">
+                <p className="label label--navy">Filtro ativo</p>
+                <h2 className="mt-2">Sem festivais nesta categoria</h2>
+                <p className="mt-3 text-ink-soft">
+                  Não há registos com prémios em “{categoryLabel(activeCategory)}”.
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => setActiveCategory(null)}
+                  className="mt-6"
+                >
+                  Mostrar todos
+                </Button>
+              </div>
+            )}
+
+            {filteredFestivals.length > 0 && (
+              <div className="flex flex-col gap-24">
+                {groupedByYear.map(([year, yearFestivals]) => (
+                  <YearSection
+                    key={year}
+                    year={year}
+                    festivals={yearFestivals}
+                    onEdit={isAuthenticated ? setEditingFestival : undefined}
+                    onDelete={isAuthenticated ? handleDelete : undefined}
+                    deletingId={deletingId}
+                  />
+                ))}
+              </div>
+            )}
           </>
         )}
       </main>
