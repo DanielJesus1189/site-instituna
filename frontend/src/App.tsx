@@ -8,7 +8,6 @@ import { SkeletonCard } from './components/SkeletonCard';
 import { StatsDashboard } from './components/StatsDashboard';
 import { yearOf } from './utils/date';
 import type { Festival } from './types';
-import { ArchFrame } from './components/ui/ArchFrame';
 import { Brand } from './components/ui/Brand';
 import { BrushStripes } from './components/ui/BrushStripes';
 import { Button } from './components/ui/Button';
@@ -119,19 +118,17 @@ function App() {
               </p>
             </div>
 
-            <ArchFrame className="hero-arch hidden lg:block">
-              <div className="relative flex h-full w-full flex-col items-center justify-center">
-                <img
-                  src="/logo-instituna.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="arch-crest"
-                  width={512}
-                  height={422}
-                />
-                <span className="hero-arch__caption label label--ink">Arquivo</span>
-              </div>
-            </ArchFrame>
+            <div className="hero-crest hidden lg:flex">
+              <img
+                src="/logo-instituna.png"
+                alt=""
+                aria-hidden="true"
+                className="hero-crest__logo"
+                width={512}
+                height={422}
+              />
+              <span className="label label--ink">Arquivo</span>
+            </div>
           </div>
         </div>
       </section>
