@@ -8,11 +8,12 @@ import { SkeletonCard } from './components/SkeletonCard';
 import { StatsDashboard } from './components/StatsDashboard';
 import { yearOf } from './utils/date';
 import type { Festival } from './types';
-
-const primaryButton =
-  'border border-ink bg-ink px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-paper transition-colors hover:border-wine hover:bg-wine';
-const textButton =
-  'font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft underline decoration-rule underline-offset-4 transition-colors hover:text-wine';
+import { ArchFrame } from './components/ui/ArchFrame';
+import { Brand } from './components/ui/Brand';
+import { BrushStripes } from './components/ui/BrushStripes';
+import { Button } from './components/ui/Button';
+import { InkDivider } from './components/ui/InkDivider';
+import { Watercolor } from './components/ui/Watercolor';
 
 function App() {
   const {
@@ -68,105 +69,117 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <header className="border-b border-ink/15">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between border-b border-ink/10 py-3 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-soft">
+    <div className="min-h-screen text-ink">
+      <header className="site-header">
+        <div className="page-shell">
+          <div className="header-topline label">
             <span>Arquivo de festivais de tunas</span>
             <span className="hidden sm:inline">Portugal</span>
           </div>
 
-          <div className="flex flex-col gap-6 py-7 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-wine">
-                Instituna
-              </p>
-              <h1 className="mt-2 font-serif text-4xl font-semibold leading-none tracking-tight sm:text-5xl">
-                Cartaz &amp; Palmarés
-              </h1>
-              <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
-                Um registo dos festivais, cartazes e prémios das tunas académicas.
-              </p>
-            </div>
+          <div className="header-main">
+            <Brand />
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div className="header-actions">
               {isAuthenticated ? (
                 <>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
-                    {user?.username}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateOpen(true)}
-                    className={primaryButton}
-                  >
+                  <span className="user-name">{user?.username}</span>
+                  <Button type="button" onClick={() => setIsCreateOpen(true)}>
                     Novo festival
-                  </button>
-                  <button type="button" onClick={logout} className={textButton}>
+                  </Button>
+                  <Button type="button" variant="text" onClick={logout}>
                     Sair
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsLoginOpen(true)}
-                  className={primaryButton}
-                >
+                <Button type="button" onClick={() => setIsLoginOpen(true)}>
                   Entrar
-                </button>
+                </Button>
               )}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <section className="hero" aria-labelledby="hero-title">
+        <Watercolor tone="green" className="-left-28 -top-32" />
+        <Watercolor tone="ochre" className="right-[-7rem] top-8" />
+        <Watercolor tone="blue" className="bottom-[-10rem] left-1/3" />
+
+        <div className="page-shell relative">
+          <div className="hero-grid">
+            <div>
+              <p className="label label--green">Instituna</p>
+              <h1 id="hero-title" className="hero-title display-ink mt-3">
+                Cartaz &amp; Palmarés
+              </h1>
+              <BrushStripes className="hero-stripes" />
+              <p className="hero-copy">
+                Um registo dos festivais, cartazes e prémios das tunas académicas.
+              </p>
+            </div>
+
+            <ArchFrame className="hero-arch hidden lg:block">
+              <div className="relative flex h-full w-full flex-col items-center justify-center">
+                <span className="hero-arch__monogram" aria-hidden="true">
+                  I
+                </span>
+                <span className="hero-arch__caption label label--ink">Arquivo</span>
+              </div>
+            </ArchFrame>
+          </div>
+        </div>
+      </section>
+
+      <main className="page-shell pb-16 pt-4 sm:pt-8">
         {error && (
-          <div className="mx-auto max-w-xl border border-rule bg-paper-deep/50 p-8 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-wine">
-              Erro de ligação
-            </p>
-            <p className="mt-3 font-serif text-xl">Não foi possível carregar os festivais</p>
-            <p className="mt-2 text-sm text-ink-soft">{error}</p>
-            <button type="button" onClick={refetch} className={`mt-6 ${primaryButton}`}>
+          <div className="state-card">
+            <p className="label label--navy">Erro de ligação</p>
+            <h2 className="mt-2">Não foi possível carregar os festivais</h2>
+            <p className="mt-3 text-ink-soft">{error}</p>
+            <Button type="button" onClick={refetch} className="mt-6">
               Tentar novamente
-            </button>
+            </Button>
           </div>
         )}
 
         {!error && isLoading && (
-          <div className="grid grid-cols-1 gap-x-10 gap-y-12 lg:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
+          <div>
+            <div className="mb-8 flex items-center gap-3">
+              <BrushStripes loading className="h-5 w-24" />
+              <span className="label">A carregar arquivo…</span>
+            </div>
+            <div className="grid grid-cols-1 gap-x-10 gap-y-12 lg:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
           </div>
         )}
 
         {!error && !isLoading && festivals.length === 0 && (
-          <div className="mx-auto max-w-xl border border-dashed border-rule bg-paper-deep/30 p-10 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-wine">
-              Arquivo vazio
-            </p>
-            <p className="mt-3 font-serif text-2xl">Ainda não há festivais registados</p>
-            <p className="mt-2 text-sm text-ink-soft">
+          <div className="state-card">
+            <p className="label label--navy">Arquivo vazio</p>
+            <h2 className="mt-2">Ainda não há festivais registados</h2>
+            <p className="mt-3 text-ink-soft">
               Cria o primeiro festival para começares a construir o palmarés.
             </p>
             {isAuthenticated ? (
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsCreateOpen(true)}
-                className={`mt-6 ${primaryButton}`}
+                className="mt-6"
               >
                 Novo festival
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsLoginOpen(true)}
-                className={`mt-6 ${primaryButton}`}
+                className="mt-6"
               >
                 Entrar para adicionar
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -175,14 +188,17 @@ function App() {
           <>
             <StatsDashboard festivals={festivals} />
 
-            <div className="mb-10 flex items-end justify-between border-b border-ink/15 pb-3">
-              <h2 className="font-serif text-2xl font-semibold">Arquivo por ano</h2>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft">
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="font-title text-2xl sm:text-3xl">Arquivo por ano</h2>
+                <InkDivider className="mt-2 w-44 opacity-70" />
+              </div>
+              <span className="label">
                 {festivals.length} {festivals.length === 1 ? 'festival' : 'festivais'}
               </span>
             </div>
 
-            <div className="flex flex-col gap-20">
+            <div className="flex flex-col gap-24">
               {groupedByYear.map(([year, yearFestivals]) => (
                 <YearSection
                   key={year}
@@ -198,10 +214,19 @@ function App() {
         )}
       </main>
 
-      <footer className="border-t border-ink/15">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <span>Cartaz &amp; Palmarés</span>
-          <span>Arquivo de festivais de tunas</span>
+      <footer className="site-footer">
+        <Watercolor tone="green" className="bottom-[-8rem] left-[-5rem]" />
+        <Watercolor tone="ochre" className="right-[-6rem] top-[-4rem]" />
+        <div className="page-shell relative">
+          <BrushStripes className="footer-stripes" />
+          <InkDivider className="mb-4 opacity-60" />
+          <div className="footer-inner">
+            <Brand compact className="footer-brand" />
+            <div className="flex flex-col items-start gap-1 sm:items-end">
+              <p className="label label--ink">© {new Date().getFullYear()} Instituna</p>
+              <p className="label">Arquivo de festivais de tunas</p>
+            </div>
+          </div>
         </div>
       </footer>
 
