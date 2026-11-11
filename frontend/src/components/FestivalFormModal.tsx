@@ -2,6 +2,9 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { CreateFestivalInput, Festival } from '../types';
 import { ChipListInput } from './ChipListInput';
+import { BrushStripes } from './ui/BrushStripes';
+import { Button } from './ui/Button';
+import { Field } from './ui/Field';
 
 interface FestivalFormModalProps {
   festival?: Festival;
@@ -9,10 +12,6 @@ interface FestivalFormModalProps {
   onSubmit: (input: CreateFestivalInput, cartaz?: File) => Promise<void>;
   isSubmitting: boolean;
 }
-
-const inputClass =
-  'w-full border-x-0 border-t-0 border-b border-ink/25 bg-transparent px-0 py-2 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft/50 focus:border-wine focus:ring-0';
-const labelClass = 'mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-ink-soft';
 
 export function FestivalFormModal({
   festival,
@@ -71,106 +70,100 @@ export function FestivalFormModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55 p-4"
-      onClick={onClose}
-    >
+    <div className="modal-overlay" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-xl overflow-y-auto border border-ink/20 bg-paper shadow-[0_24px_70px_rgba(29,26,22,0.22)]"
+        className="modal-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="festival-form-title"
       >
-        <div className="flex items-start justify-between border-b border-ink/15 px-6 py-5">
+        <div className="modal-header">
           <div>
-            <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-wine">
-              Arquivo
-            </p>
-            <h2 className="mt-1 font-serif text-2xl font-semibold">
+            <p className="label label--navy">Arquivo</p>
+            <h2 id="festival-form-title" className="mt-1 font-title text-2xl">
               {isEditing ? 'Editar festival' : 'Novo festival'}
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Fechar"
-            className="font-serif text-2xl leading-none text-ink-soft transition-colors hover:text-ink"
-          >
+          <Button type="button" variant="text" size="small" onClick={onClose} aria-label="Fechar">
             ×
-          </button>
+          </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6">
-          <div>
-            <label className={labelClass}>Nome do festival</label>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <Field label="Nome do festival" htmlFor="festival-name">
             <input
-              className={inputClass}
+              id="festival-name"
+              className="field-control"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="XIII Viriatus"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className={labelClass}>Tuna organizadora</label>
+          <Field label="Tuna organizadora" htmlFor="festival-tuna">
             <input
-              className={inputClass}
+              id="festival-tuna"
+              className="field-control"
               value={tunaName}
               onChange={(e) => setTunaName(e.target.value)}
               placeholder="Viriatuna"
             />
-          </div>
+          </Field>
 
-          <div className="grid grid-cols-2 gap-5">
-            <div>
-              <label className={labelClass}>Localidade</label>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Field label="Localidade" htmlFor="festival-location">
               <input
-                className={inputClass}
+                id="festival-location"
+                className="field-control"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Viseu"
               />
-            </div>
-            <div>
-              <label className={labelClass}>Data</label>
+            </Field>
+            <Field label="Data" htmlFor="festival-date">
               <input
+                id="festival-date"
                 type="date"
-                className={inputClass}
+                className="field-control"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
-            </div>
+            </Field>
           </div>
 
-          <div>
-            <label className={labelClass}>Cartaz (imagem)</label>
+          <Field label="Cartaz (imagem)">
             <div className="flex flex-wrap items-center gap-3">
-              <label className="cursor-pointer border border-ink/20 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine">
+              <label className="file-picker" htmlFor="festival-cartaz">
                 {cartazFile ? 'Trocar ficheiro' : 'Escolher ficheiro'}
                 <input
+                  id="festival-cartaz"
                   type="file"
                   accept="image/*"
                   className="sr-only"
                   onChange={(e) => setCartazFile(e.target.files?.[0] ?? null)}
                 />
               </label>
-              <span className="min-w-0 flex-1 truncate text-xs text-ink-soft">
+              <span className="min-w-0 flex-1 truncate text-sm text-ink-soft">
                 {cartazFile ? cartazFile.name : 'Nenhum ficheiro selecionado'}
               </span>
               {cartazFile && (
-                <button
+                <Button
                   type="button"
+                  variant="text"
+                  size="small"
                   onClick={() => setCartazFile(null)}
-                  className="font-mono text-[9px] uppercase tracking-[0.16em] text-wine underline decoration-rule underline-offset-4 hover:text-wine-dark"
                 >
                   Remover
-                </button>
+                </Button>
               )}
             </div>
             {festival?.cartazUrl && !cartazFile && (
-              <p className="mt-2 text-[11px] text-ink-soft">
+              <p className="field-hint mt-2">
                 Já tem um cartaz. Seleciona um novo ficheiro para o substituir.
               </p>
             )}
-          </div>
+          </Field>
 
           <ChipListInput
             label="Prémios"
@@ -191,23 +184,21 @@ export function FestivalFormModal({
             onChange={setTunasExtra}
           />
 
-          {error && <p className="text-sm font-medium text-wine">{error}</p>}
+          {error && (
+            <p className="form-error" role="alert" aria-live="assertive">
+              {error}
+            </p>
+          )}
 
-          <div className="mt-2 flex items-center justify-end gap-6 border-t border-ink/15 pt-5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-soft underline decoration-rule underline-offset-4 hover:text-wine"
-            >
+          {isSubmitting && <BrushStripes loading className="h-5 w-28 self-center" />}
+
+          <div className="modal-actions">
+            <Button type="button" variant="text" onClick={onClose}>
               Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="border border-ink bg-ink px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-paper transition-colors hover:border-wine hover:bg-wine disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'A guardar…' : isEditing ? 'Guardar alterações' : 'Guardar festival'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 
 interface ChipListInputProps {
@@ -10,6 +10,7 @@ interface ChipListInputProps {
 
 export function ChipListInput({ label, placeholder, values, onChange }: ChipListInputProps) {
   const [draft, setDraft] = useState('');
+  const inputId = useId();
 
   function commitDraft() {
     const trimmed = draft.trim();
@@ -33,38 +34,34 @@ export function ChipListInput({ label, placeholder, values, onChange }: ChipList
 
   return (
     <div>
-      <label className="mb-1 block font-mono text-[9px] uppercase tracking-[0.18em] text-ink-soft">
+      <label className="field-label" htmlFor={inputId}>
         {label}
       </label>
-      <div className="flex flex-wrap items-center gap-2 border border-ink/20 bg-paper/60 p-2.5 transition-colors focus-within:border-wine">
+      <div className="chip-box mt-1.5">
         {values.map((value, i) => (
-          <span
-            key={`${value}-${i}`}
-            className="flex items-center gap-1.5 border border-ink/20 bg-paper-deep/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-ink"
-          >
+          <span key={`${value}-${i}`} className="chip">
             {value}
             <button
               type="button"
               onClick={() => removeAt(i)}
               aria-label={`Remover ${value}`}
-              className="leading-none text-ink-soft hover:text-wine"
+              className="chip__remove"
             >
               ×
             </button>
           </span>
         ))}
         <input
+          id={inputId}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={commitDraft}
           placeholder={values.length === 0 ? placeholder : ''}
-          className="min-w-[8ch] flex-1 border-none bg-transparent px-1 py-0.5 text-sm text-ink outline-none placeholder:text-ink-soft/50"
+          className="chip-input"
         />
       </div>
-      <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-soft/70">
-        Enter ou vírgula para adicionar
-      </p>
+      <p className="field-hint mt-1">Enter ou vírgula para adicionar</p>
     </div>
   );
 }
